@@ -1,17 +1,13 @@
 import express from 'express'
+import { Login, Logout, SignUp } from 
+'../controller/auth.controller.js';
 
 const authRoute = express.Router();
 
-authRoute.get("/signup",(req,res)=>{
-    res.status(200).json({message:"User has register"});
-});
+authRoute.post("/signup",SignUp);
 
-authRoute.post("/login",(req,res)=>{
-     res.status(200).json({message:"user sign in"});
-});
+authRoute.post("/login",Login);
 
-authRoute.get("/logout",(req,res)=>{
-res.status(200).json({message:"User logout"})
-});
+authRoute.get("/logout",Logout);
 
 export default authRoute;
