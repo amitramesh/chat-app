@@ -1,9 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoute from './routes/auth.route.js';
+import connectDB from './db/db.js';
+
 
 dotenv.config();
 const app = express();
+connectDB();
 
 app.get('/',(req,res)=>{
     res.send("Welcome to Chat Application")

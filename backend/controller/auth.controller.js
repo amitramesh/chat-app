@@ -1,3 +1,5 @@
+import User from "../models/user.model.js";
+
 export const SignUp = async (req, res) => {
     res.status(200).json({ message: "User has register" });
 }
