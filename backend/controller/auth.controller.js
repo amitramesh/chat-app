@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../lib/db/utli.js';
+import cloudinary from '../lib/cloudinary.js';
 
 export const SignUp = async (req, res) => {
 
@@ -62,11 +63,28 @@ export const Login = async (req, res) => {
 }
 
 export const Logout = async (req, res) => {
-    //res.clearCookie('jwt')
     res.cookie('jwt',"",{maxAge:0});
     res.status(200).json({ message: "User logout Successfully." })
 }
 
 export const UpdateProfile = async (req,res)=>{
+
+    const userId = req.user.id;
+    if(!req.file){
+        res.status(400).json({message: "Profile Picture is required"});
+    }
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cloudinaryResponse = await cloudinary.uploader.upload(dataURI);
+    const user = await User.findByIdAndUpdate(userId,{profilePic: cloudinaryResponse.secure_url},{new:true});
     res.status(200).json({message: req.user});
+}
+
+export const CheckAuth = async (req,res) =>{
+    const token = req.cookies.jwt;
+    console.log("Req",req)
+    if(!token){
+        res.status(400).json({message: "Unauthorized User"});
+    }
+    res.status(200).json({User: req.user});
 }

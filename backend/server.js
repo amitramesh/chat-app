@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.route.js';
 import connectDB from './lib/db/db.js'
-
+import multer from 'multer';
+//const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 const app = express();
 app.use(express.json());
