@@ -25,33 +25,48 @@ export const SignUp = async (req, res) => {
         password: hashPassword
     });
     if (newUser) {
-      generateToken(newUser.id, res);
-      await newUser.save()
-      res.status(201).json({ message: "User has register" });
+        generateToken(newUser.id, res);
+        await newUser.save()
+        res.status(201).json({ message: "User has register" });
     }
 }
 
 export const Login = async (req, res) => {
 
-    const { email, password } = req.body;
-    const user = await User.findOne({email});
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
-    if(!user){
-        res.status(400).json({message:"User does not found."})
+        if (!user) {
+            res.status(400).json({ message: "User does not found." })
+        }
+
+        const matchPassword = bcrypt.compare(password, user.password);
+
+        if (!matchPassword) {
+            res.status(404).json({ message: "Invalid user!" });
+        }
+
+        console.log("LoggedIn User ", user);
+
+        generateToken(user.id, res)
+        res.status(200).json(
+            { 
+                _id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                profilePic: user.profilePic 
+            }
+        );
+    } catch (error) {
+        console.log("Error in login controller - ", error);
+        res.status(500).json({message: "Internal Server Error"});
     }
 
-    const matchPassword = bcrypt.compare(password,user.password);
-
-    if(!matchPassword){
-        res.status(404).json({message:"Invalid user!"});
-    }
-
-    console.log("LoggedIn User ", user);
-    //req.User = user;
-
-    res.status(200).json({ message: "user sign in" });
 }
 
 export const Logout = async (req, res) => {
-    res.status(200).json({ message: "User logout" })
+    //res.clearCookie('jwt')
+    res.cookie('jwt',"",{maxAge:0});
+    res.status(200).json({ message: "User logout Successfully." })
 }
