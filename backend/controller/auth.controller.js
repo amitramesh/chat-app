@@ -5,7 +5,6 @@ import { generateToken } from '../lib/db/utli.js';
 export const SignUp = async (req, res) => {
 
     const { fullName, email, password } = req.body;
-    console.log("Email ", email)
     if (password.length < 6) {
         res.status(200).json({ message: "Password length should be maximum 6" });
     }
@@ -46,9 +45,6 @@ export const Login = async (req, res) => {
         if (!matchPassword) {
             res.status(404).json({ message: "Invalid user!" });
         }
-
-        console.log("LoggedIn User ", user);
-
         generateToken(user.id, res)
         res.status(200).json(
             { 
@@ -69,4 +65,8 @@ export const Logout = async (req, res) => {
     //res.clearCookie('jwt')
     res.cookie('jwt',"",{maxAge:0});
     res.status(200).json({ message: "User logout Successfully." })
+}
+
+export const UpdateProfile = async (req,res)=>{
+    res.status(200).json({message: req.user});
 }
