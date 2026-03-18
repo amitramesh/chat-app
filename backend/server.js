@@ -2,8 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.route.js';
+import messageRoute from './routes/messageRoute.route.js'
 import connectDB from './lib/db/db.js'
-import multer from 'multer';
+//import multer from 'multer';
 //const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 const app = express();
@@ -14,6 +15,7 @@ app.get('/',(req,res)=>{
 });
 
 app.use("/api/auth/",authRoute);
+app.use("/api/message/",messageRoute);
 
 app.listen(3000,()=>{
     connectDB();
